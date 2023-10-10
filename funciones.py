@@ -2,13 +2,13 @@ from math import sqrt
 import tkinter as tk
 from tkinter import messagebox
 
-
+#Funcion que lanza un mensaje de alerta y return true/false de acuerdo a lo presionado
 def msg_askyesno():
     msg = messagebox.askyesno(
         title="Confirmar borrado", message="¿Deseas borrar todo el historial?")
     return msg
 
-
+#Funcion que lanza un mensaje de confirmacion
 def msg_confirmacion():
     messagebox.showinfo("Operación completada",
                         "¡Historial borrado con éxito!")
@@ -52,16 +52,15 @@ def reciclar_historial(lista,  visor):
     else:
         print("Falló la operación")
 
-
+#Funcion que calcula potencia cuadrada
 def calcular_potencia(base, exponente):
     return base ** exponente
 
+#Funcion que calcula raiz cuadrada
 def calcular_raiz(n):
     return sqrt(n)
 
 # La función se encarga de evaluar una expresión matemática dada como cadena de texto en el arg expresion y devuelve el resultado de la evaluación.
-
-
 def calcular_expresion(expresion):
     # Define operadores y números válidos en la expresión.
     operadores_validos = ("+", "-", "*", "/", "√", "^")

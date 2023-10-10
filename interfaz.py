@@ -1,6 +1,5 @@
-from tkinter import Entry, Frame, Button, Toplevel, Listbox, Label
-from funciones import reciclar_historial, borrar_historial, borrar_todo_historial, calcular_expresion
 import tkinter as tk
+from funciones import reciclar_historial, borrar_historial, borrar_todo_historial, calcular_expresion
 
 # Colores
 NEGRO = "#212121"
@@ -65,7 +64,7 @@ def handler_btn(valor, visor, ventana_principal):
 
 def crear_top_level(ventana_principal, visor):
     # Crea una nueva ventana secundaria (Toplevel) dentro de la ventana principal.
-    ventana_historial = Toplevel(ventana_principal)
+    ventana_historial = tk.Toplevel(ventana_principal)
 
     # Asigna un ícono (iconbitmap) a la ventana secundaria desde el archivo "./img/history.ico".
     ventana_historial.iconbitmap("./img/history.ico")
@@ -80,7 +79,7 @@ def crear_top_level(ventana_principal, visor):
     ventana_historial.rowconfigure(2, weight=1)
 
     # Crea una etiqueta para mostrar el título "Historial de Operaciones".
-    etiqueta = Label(
+    etiqueta = tk.Label(
         ventana_historial,
         text="Historial de Operaciones",
         font=("Arial", 14, "bold"),
@@ -91,7 +90,7 @@ def crear_top_level(ventana_principal, visor):
     etiqueta.grid(row=0, column=0, columnspan=3, pady=(10, 0), sticky="nsew")
 
     # Crea una Listbox para mostrar las operaciones en el historial.
-    lista = Listbox(
+    lista = tk.Listbox(
         ventana_historial,
         bg=GRIS_OSCURO,
         relief="flat",
@@ -110,7 +109,7 @@ def crear_top_level(ventana_principal, visor):
     ancho_maximo = len("Borrar Todos")
 
     # Crea el botón "Borrar Todos" que llama a la función borrar_todo_historial.
-    boton_borrar_todos = Button(
+    boton_borrar_todos = tk.Button(
         ventana_historial,
         text="Borrar Todos",
         command=lambda lista=lista: borrar_todo_historial(lista, historial),
@@ -123,7 +122,7 @@ def crear_top_level(ventana_principal, visor):
     boton_borrar_todos.grid(row=2, column=0, pady=0, sticky="nsew")
 
     # Crea el botón "Borrar" que llama a la función borrar_historial.
-    boton_borrar = Button(
+    boton_borrar = tk.Button(
         ventana_historial,
         text="Borrar",
         command=lambda lista=lista: borrar_historial(lista, historial),
@@ -136,7 +135,7 @@ def crear_top_level(ventana_principal, visor):
     boton_borrar.grid(row=2, column=1, pady=0, sticky="nsew")
 
     # Crea el botón "Reciclar" que llama a la función reciclar_historial.
-    boton_reciclar = Button(
+    boton_reciclar = tk.Button(
         ventana_historial,
         text="Reciclar",
         command=lambda: reciclar_historial(lista, visor),
@@ -151,7 +150,7 @@ def crear_top_level(ventana_principal, visor):
 
 def crear_calculadora_gui(ventana_principal):
     # Etiqueta que muestra el título "CASIO" en la parte superior de la calculadora.
-    etiqueta = Label(
+    etiqueta = tk.Label(
         ventana_principal,
         text="CASIO",
         font=("Arial", 11, "bold", "italic"),
@@ -161,7 +160,7 @@ def crear_calculadora_gui(ventana_principal):
     etiqueta.grid(row=0, column=0, sticky="nw", pady=(10, 5), padx=5)
 
     # Entry que simula el visor donde se mostrarán las expresiones y resultados.
-    visor = Entry(
+    visor = tk.Entry(
         ventana_principal,
         font=("Arial", 25, "bold"),
         width=21,
@@ -175,7 +174,7 @@ def crear_calculadora_gui(ventana_principal):
                padx=7, sticky="nsew")  # Expand horizontally
 
     # Marco que contiene los botones de la calculadora.
-    marco_botones = Frame(ventana_principal, bg=GRIS_OSCURO)
+    marco_botones = tk.Frame(ventana_principal, bg=GRIS_OSCURO)
     marco_botones.grid(row=2, column=0, columnspan=1, padx=7,
                        pady=(15, 10), sticky="nsew")  # Expand vertically
 
@@ -187,7 +186,7 @@ def crear_calculadora_gui(ventana_principal):
             fg = "white"
 
         # Crea y coloca un botón en el marco de botones.
-        Button(
+        tk.Button(
             marco_botones,
             width=7,
             font=("Arial", 8, "bold"),
