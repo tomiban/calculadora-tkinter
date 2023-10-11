@@ -1,9 +1,9 @@
 from tkinter import Tk
-import interfaz
+from interfaz import COLORES, crear_calculadora_gui
 
 ventana_principal = Tk()
 ventana_principal.title("Calculadora")
-ventana_principal.configure(background=interfaz.GRIS_OSCURO)
+ventana_principal.configure(background=COLORES["GRIS_OSCURO"])
 ventana_principal.geometry("380x390")
 ventana_principal.iconbitmap('./img/calculadora.ico')
 
@@ -13,6 +13,6 @@ ventana_principal.rowconfigure(1, weight=1)  # Row 1, where the Entry widget is 
 ventana_principal.rowconfigure(2, weight=1)
 
 #Llamamos a la función que crea la interfaz
-interfaz.crear_calculadora_gui(ventana_principal)
+crear_calculadora_gui(ventana_principal)
 
 ventana_principal.mainloop()
