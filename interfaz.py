@@ -14,9 +14,6 @@ COLORES = {
     "VERDE": '#7CCD7C'
 }
 
-# Lista para controlar el historial de operaciones
-historial = []
-
 # Lista de tuplas botones: (text, bg, row, column)
 botones_config = [
     ("Log", COLORES["CELESTE"], 0, 0),
@@ -42,9 +39,15 @@ botones_config = [
     ("C", COLORES["NARANJA_OSCURO"], 1, 4),
 ]
 
+
+# Lista para controlar el historial de operaciones
+historial = []
+# Variable global para almacenar la ventana top level que maneja el historial de operaciones  
+tl = None
+#Variable global bandera para determinar si la ventana historial se encuentra abierta
+isHistorialOpen = False
+
 # Esta función se utiliza para controlar las acciones de los botones en la calculadora. Recibe tres argumentos: valor es el valor del botón presionado, visor es el Entry donde se muestra la expresión y el resultado, y ventana_principal es la ventana principal de la calculadora.
-
-
 def handler_btn(valor, visor, ventana_principal):
     if valor == "=":
         expresion = visor.get()
@@ -58,14 +61,23 @@ def handler_btn(valor, visor, ventana_principal):
         historial.append(expresion + " = " + str(resultado))
         print(historial)
     elif valor == "Log":
-        crear_top_level(ventana_principal, visor)
+        global isHistorialOpen
+        global tl
+        if not isHistorialOpen:
+            tl = crear_top_level(ventana_principal, visor)
+            isHistorialOpen = True
+        else:
+            cerrar_top_level(tl)
+            isHistorialOpen = False
     elif valor == "CE":
         visor.delete(len(visor.get()) - 1, "end")
     elif valor == "C":
         visor.delete(0, "end")
     else:
         visor.insert("end", valor)
-
+        
+def cerrar_top_level(window):
+    window.destroy()
 
 def crear_top_level(ventana_principal, visor):
     # Crea una nueva ventana secundaria (Toplevel) dentro de la ventana principal.
@@ -151,7 +163,8 @@ def crear_top_level(ventana_principal, visor):
         height=2,
     )
     boton_reciclar.grid(row=2, column=2, pady=0, sticky="nsew")
-
+    
+    return ventana_historial
 
 def create_button(marco, text, visor, ventana_principal):
     return tk.Button(
@@ -162,7 +175,6 @@ def create_button(marco, text, visor, ventana_principal):
         text=text,
         command=lambda v=text: handler_btn(v, visor, ventana_principal),
     )  # Expand both vertically and horizontally
-
 
 def crear_calculadora_gui(ventana_principal):
     # Etiqueta que muestra el título "CASIO" en la parte superior de la calculadora.
