@@ -1,3 +1,5 @@
+#Contiene funciones relacionadas con las operaciones matemáticas y la evaluación de expresiones.
+
 from math import sqrt
 import tkinter as tk
 from tkinter import messagebox
@@ -10,8 +12,7 @@ def msg_askyesno():
 
 #Funcion que lanza un mensaje de confirmacion
 def msg_confirmacion():
-    messagebox.showinfo("Operación completada",
-                        "¡Historial borrado con éxito!")
+    messagebox.showinfo("Operación completada", "¡Historial borrado con éxito!")
     return None
 
 # Esta función se llama cuando se presiona el botón "Borrar Todos" en la ventana de historial. Elimina todos los elementos en el ListBox y borra todos los elementos en la lista historial.

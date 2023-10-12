@@ -6,9 +6,17 @@ ventana_principal.title("Calculadora")
 ventana_principal.geometry("340x275")
 
 def handler_btn(visor, valor):
-    visor.insert(tk.END, valor)
+    if valor == "=":
+        Calculo= visor.get()
+        Resultado= eval(Calculo)
+        visor.delete(0,tk.END)
+        visor.insert(tk.END,Resultado)
+    elif valor == "C":
+        visor.delete(0,tk.END)
+            
+    else:
+        visor.insert(tk.END, valor)
     
-
 #Funcion
 def Crear_Calculadora_GUI(ventana_principal):
     #Campo de texto
@@ -36,8 +44,6 @@ def Crear_Calculadora_GUI(ventana_principal):
         if column==4:
             row=row+1
             column=0
-    
-    
 
 
 
