@@ -1,9 +1,9 @@
 #Contiene los metodos que inian la ventana principal y la invocacion de la GUI
 
-from tkinter import Tk
+import tkinter as tk
 from interfaz import COLORES, crear_calculadora_gui
 
-ventana_principal = Tk()
+ventana_principal = tk.Tk()
 ventana_principal.title("Calculadora")
 ventana_principal.configure(background=COLORES["GRIS_OSCURO"])
 ventana_principal.geometry("380x390")

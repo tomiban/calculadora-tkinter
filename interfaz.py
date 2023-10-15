@@ -1,6 +1,6 @@
 # Contiene funciones relacionadas con la interfaz de usuario
 import tkinter as tk
-from funciones import reciclar_historial, borrar_historial, borrar_todo_historial, calcular_expresion
+from operaciones import reciclar_historial, borrar_historial, borrar_todo_historial, calcular_expresion
 
 # Diccionario de colores
 COLORES = {
@@ -34,7 +34,7 @@ botones_config = [
     (".", COLORES["NEGRO"], 4, 1),
     ("√", COLORES["NEGRO"], 4, 2),
     ("^2", COLORES["NEGRO"], 4, 3),
-    ("=", COLORES["NEGRO"], 4, 4),
+    ("=", COLORES["GRIS"], 4, 4),
     ("CE", COLORES["NARANJA_OSCURO"], 1, 3),
     ("C", COLORES["NARANJA_OSCURO"], 1, 4),
 ]
