@@ -16,5 +16,5 @@ ventana_principal.rowconfigure(2, weight=1)
 
 #Llamamos a la función que crea la interfaz
 crear_calculadora_gui(ventana_principal)
-
+    
 ventana_principal.mainloop()

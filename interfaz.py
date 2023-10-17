@@ -4,7 +4,7 @@ from operaciones import reciclar_historial, borrar_historial, borrar_todo_histor
 
 # Diccionario de colores
 COLORES = {
-   "NEGRO": "#212121",
+    "NEGRO": "#212121",
     "GRIS_OSCURO": "#5C5C5C",
     "GRIS": "#B0B0B0",
     "NARANJA_CLARO": "#FFA500",
@@ -15,7 +15,7 @@ COLORES = {
 }
 
 # Lista de tuplas botones: (text, bg, row, column)
-botones_config = [
+BOTONES = [
     ("Log", COLORES["CELESTE"], 0, 0),
     ("7", COLORES["NEGRO"], 1, 0),
     ("8", COLORES["NEGRO"], 1, 1),
@@ -34,63 +34,87 @@ botones_config = [
     (".", COLORES["NEGRO"], 4, 1),
     ("√", COLORES["NEGRO"], 4, 2),
     ("^2", COLORES["NEGRO"], 4, 3),
-    ("=", COLORES["GRIS"], 4, 4),
+    ("=", COLORES["NEGRO"], 4, 4),
     ("CE", COLORES["NARANJA_OSCURO"], 1, 3),
     ("C", COLORES["NARANJA_OSCURO"], 1, 4),
 ]
 
+# VARIABLES GLOBALES
+historial = []  # Almacena el historial de operaciones
 
-# Lista para controlar el historial de operaciones
-historial = []
-# Variable global para almacenar la ventana top level que maneja el historial de operaciones  
-tl = None
-#Variable global bandera para determinar si la ventana historial se encuentra abierta
-isHistorialOpen = False
+ventana_principal = None  # Almacena la ventana principal que nos llegará del main en la funcion crear_calculadora_gui
+
+top_level = None  # Almacena la ventana top level que maneja el historial de operaciones, al momento de ser iniciada
+
+isHistorialOpen = False  # Bandera para determinar si la ventana historial se encuentra abierta
 
 # Esta función se utiliza para controlar las acciones de los botones en la calculadora. Recibe tres argumentos: valor es el valor del botón presionado, visor es el Entry donde se muestra la expresión y el resultado, y ventana_principal es la ventana principal de la calculadora.
-def handler_btn(valor, visor, ventana_principal):
+def manejador_evento_boton(valor, visor):
     if valor == "=":
+        # Obtener la expresión actual en el visor
         expresion = visor.get()
+        
+        # Borra el contenido del visor
         visor.delete(0, "end")
+        
+        # Calcular el resultado de la expresión
         resultado = calcular_expresion(expresion)
+        
         visor.insert(0, resultado)
-        # Si lo que retorna calc_expresion es un error retornamos None y salimos de la funcion
-        if (resultado == 'Math Error' or resultado == 'Sintax Error' or resultado == 'Error'):
+        
+        # Si lo que retorna calcular_expresion es un error, retornamos None y salimos de la función sin agregar la operacion al historial
+        if (resultado == 'Math Error' or resultado == 'Syntax Error' or resultado == 'Invalid Expression'):
             return None
-        # Si es un resultado valido lo metememos en el la lista
-        historial.append(expresion + " = " + str(resultado))
-        print(historial)
+        else:
+        # Si es un resultado válido, lo añadimos al historial
+            historial.append(expresion + " = " + str(resultado))
+            print(historial)
+            
     elif valor == "Log":
+        # Accedemos a las variables globales para poder modificarlas dentro del contexto de la funcionz
         global isHistorialOpen
-        global tl
+        global top_level
+
         if not isHistorialOpen:
-            tl = crear_top_level(ventana_principal, visor)
+            # Si la ventana de historial no está abierta, la creamos y establecemos la bandera en True
+            top_level = crear_top_level(visor)
             isHistorialOpen = True
         else:
-            cerrar_top_level(tl)
+            # Si la ventana de historial ya está abierta, la cerramos y establecemos la bandera en False
+            cerrar_top_level(top_level)
             isHistorialOpen = False
+    
     elif valor == "CE":
+        # Elimina el último carácter en el visor
         visor.delete(len(visor.get()) - 1, "end")
+    
     elif valor == "C":
+        # Borra completamente el contenido del visor
         visor.delete(0, "end")
+    
     else:
+        # Si no se cumple ninguna de las condiciones anteriores, asumimos que se ha presionado un botón numérico, operador o punto decimal, y agregamos ese valor al visor en la posición actual (al final de la entrada).
         visor.insert("end", valor)
-        
+
+# Función que destruye la ventana secundaria
 def cerrar_top_level(window):
     window.destroy()
 
-def crear_top_level(ventana_principal, visor):
+# Función que crea y retorna la ventana secundaria del historial de operaciones
+def crear_top_level(visor):
     # Crea una nueva ventana secundaria (Toplevel) dentro de la ventana principal.
     ventana_historial = tk.Toplevel(ventana_principal)
 
-    # Asigna un ícono (iconbitmap) a la ventana secundaria desde el archivo "./img/history.ico".
+    # Asigna un ícono a la ventana secundaria.
     ventana_historial.iconbitmap("./img/history.ico")
 
-    # Configura el fondo de la ventana secundaria .
+    # Configura el fondo de la ventana secundaria.
     ventana_historial.configure(bg=COLORES["NEGRO"])
 
     # Configura la expansión de las filas y columnas en la ventana secundaria.
     ventana_historial.columnconfigure(0, weight=1)
+    ventana_historial.columnconfigure(1, weight=1)
+    ventana_historial.columnconfigure(2, weight=1)
     ventana_historial.rowconfigure(0, weight=1)
     ventana_historial.rowconfigure(1, weight=1)
     ventana_historial.rowconfigure(2, weight=1)
@@ -101,7 +125,7 @@ def crear_top_level(ventana_principal, visor):
         text="Historial de Operaciones",
         font=("Arial", 14, "bold"),
         bg=COLORES["NEGRO"],
-        fg=COLORES["VERDE"],
+        fg=COLORES["CELESTE"],
         height=2,
     )
     etiqueta.grid(row=0, column=0, columnspan=3, pady=(5), sticky="nsew")
@@ -122,14 +146,15 @@ def crear_top_level(ventana_principal, visor):
     for item in historial:
         lista.insert(tk.END, item)
 
-    # Calcula el ancho máximo para los botones en función del texto "Borrar Todos".
+    # Calcula el ancho máximo para los botones en función del texto de mayor longitud.
     ancho_maximo = len("Borrar Todos")
 
     # Crea el botón "Borrar Todos" que llama a la función borrar_todo_historial.
     boton_borrar_todos = tk.Button(
         ventana_historial,
         text="Borrar Todos",
-        command=lambda lista=lista: borrar_todo_historial(lista, historial),
+        command=lambda lista=lista, his=historial: borrar_todo_historial(
+            lista, his),
         bg=COLORES["ROJO"],
         width=ancho_maximo,
         fg="white",
@@ -142,7 +167,8 @@ def crear_top_level(ventana_principal, visor):
     boton_borrar = tk.Button(
         ventana_historial,
         text="Borrar",
-        command=lambda lista=lista: borrar_historial(lista, historial),
+        command=lambda lista=lista, his=historial: borrar_historial(
+            lista, his),
         bg=COLORES["NARANJA_CLARO"],
         width=ancho_maximo,
         fg="white",
@@ -155,31 +181,37 @@ def crear_top_level(ventana_principal, visor):
     boton_reciclar = tk.Button(
         ventana_historial,
         text="Reciclar",
-        command=lambda: reciclar_historial(lista, visor),
-        bg=COLORES["CELESTE"],
+        command=lambda lista=lista, visor=visor: reciclar_historial(
+            lista, visor),
+        bg=COLORES["VERDE"],
         width=ancho_maximo,
         fg="white",
         font=("Arial", 8, "bold"),
         height=2,
     )
     boton_reciclar.grid(row=2, column=2, pady=0, sticky="nsew")
-    
+
     return ventana_historial
 
-def create_button(marco, text, visor, ventana_principal):
+# Función que crea los botones dinámicamente
+def crear_boton(marco, text, visor):
     return tk.Button(
         marco,
         width=7,
         font=("Arial", 8, "bold"),
         height=2,
         text=text,
-        command=lambda v=text: handler_btn(v, visor, ventana_principal),
-    )  # Expand both vertically and horizontally
+        command=lambda text=text, visor=visor: manejador_evento_boton(
+            text, visor),
+    )
 
-def crear_calculadora_gui(ventana_principal):
+# Función que crea la interfaz gráfica de la calculadora.
+def crear_calculadora_gui(vp):
+    global ventana_principal
+    ventana_principal = vp
     # Etiqueta que muestra el título "CASIO" en la parte superior de la calculadora.
     etiqueta = tk.Label(
-        ventana_principal,
+        vp,
         text="CASIO",
         font=("Arial", 11, "bold", "italic"),
         bg=COLORES["GRIS_OSCURO"],
@@ -189,7 +221,7 @@ def crear_calculadora_gui(ventana_principal):
 
     # Entry que simula el visor donde se mostrarán las expresiones y resultados.
     visor = tk.Entry(
-        ventana_principal,
+        vp,
         font=("Arial", 25, "bold"),
         width=21,
         bg=COLORES["VERDE"],
@@ -199,26 +231,27 @@ def crear_calculadora_gui(ventana_principal):
         highlightbackground="#212121",
     )
     visor.grid(row=1, column=0, columnspan=1, pady=(5, 0),
-               padx=7, sticky="nsew")  # Expand horizontally
+               padx=7, sticky="nsew")
 
     # Marco que contiene los botones de la calculadora.
-    marco_botones = tk.Frame(ventana_principal, bg=COLORES["GRIS_OSCURO"])
+    marco_botones = tk.Frame(vp, bg=COLORES["GRIS_OSCURO"])
     marco_botones.grid(row=2, column=0, columnspan=1, padx=7,
-                       pady=(15, 10), sticky="nsew")  # Expand vertically
+                       pady=(15, 10), sticky="nsew")
 
-    # Itera a través de la configuración de los botones (botones_config).
-    for text, bg, row, column in botones_config:
+    # Itera a través de la configuración de los botones (BOTONES).
+    for text, bg, row, column in BOTONES:
+        # Disponemos el color de la fuente según el color de fondo de cada botón.
         if bg == COLORES["NARANJA_OSCURO"] or bg == COLORES["GRIS"]:
             fg = "black"
         else:
             fg = "white"
 
         # Crea y coloca un botón en el marco de botones.
-        btn = create_button(marco_botones, text, visor, ventana_principal)
-        btn.config(bg=bg,fg=fg )
+        btn = crear_boton(marco_botones, text, visor)
+        btn.config(bg=bg, fg=fg)
         btn.grid(row=row, column=column, padx=7, pady=7, sticky="nsew")
 
-    # Configuración para la expansión de columnas y filas en el marco de botones. (Junto con la propiedad nsew hace que los elementos se estiren junto a la ventana)
+    # Configuración para la expansión de columnas y filas en el marco de botones. (Junto con la propiedad nsew hace que los botones se estiren junto a la ventana marco_botones, que también se ve afectada en la configuración del main)
     for i in range(5):
         marco_botones.columnconfigure(i, weight=1)
     for i in range(5):
